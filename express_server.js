@@ -3,11 +3,10 @@ const app = express();
 const PORT = 8090; // default port 8090
 const bodyParser = require("body-parser");
 
-function generateRandomString() {
-  let randomString = (Math.random() + 1).toString(36).substring(7);
-  console.log("random", randomString);
-}
-generateRandomString();
+const generateRandomString = function () {
+  let randomString = (Math.random() + 1).toString(36).substring(6);
+  return randomString;
+};
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -59,8 +58,16 @@ app.get("/fetch", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  res.send("Ok"); // Respond with 'Ok' (we will replace this)
+  const shortURL = generateRandomString();
+
+  urlDatabase[shortURL] = req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect(`/urls/${shortURL}`);
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
 });
 
 app.listen(PORT, () => {
