@@ -57,22 +57,18 @@ app.post("/urls", (req, res) => {
 });
 
 app.post("/urls/:shortURL/edit", (req, res) => {
+  // save the :shortURL that was entered in address bar into shortURL.
   const shortURL = req.params.shortURL;
-  const { longURL } = req.body;
+  // grabs what was type into input on edit page (located in req.body and saves it into newURL)
+  const { newURL } = req.body;
+  // saves newURL into newLongURL
+  const newLongURL = newURL;
 
-  const newLongURL = longURL;
+  // changes longURL to the newLongURL at the shortURL location.
   urlDatabase[shortURL] = newLongURL;
 
-  // remove longURL and it will load
-  res.redirect(`/urls/${shortURL}`, newLongURL);
-
-  /************ */
-  // const templateVars = {
-  //   shortURL: req.params.shortURL,
-  //   longURL: urlDatabase[req.params.shortURL],
-  // };
-
-  // res.render("urls_show", templateVars);
+  // redirects to url:shortURL with updated data.
+  res.redirect(`/urls/${shortURL}`);
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
