@@ -18,7 +18,7 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if(!username){ %>
+    <% if(!user){ %>
 
     <form method="POST" action="/login">
       <input
@@ -34,7 +34,7 @@
 
     <form method="POST" action="logout">
       <div class="navbar-nav">
-        <h5 style="margin: 0.5em 1em">Logged in as: <%= username %></h5>
+        <h5 style="margin: 0.5em 1em">Logged in as: <%= user.email %></h5>
         <button
           type="submit"
           class="btn btn-outline-dark"
