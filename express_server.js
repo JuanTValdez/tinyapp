@@ -30,6 +30,15 @@ const users = {
   },
 };
 
+const getUserEmail = function (email, users) {
+  for (let user_id in users) {
+    if (users[user_id].email === email) {
+      return users[user_id].email;
+    }
+  }
+  return null;
+};
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -73,17 +82,28 @@ app.get("/fetch", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  const random_id = generateRandomNum();
 
-  users[random_id] = {
-    id: random_id,
-    email: email,
-    password: password,
-  };
+  const userEmail = getUserEmail(email, users);
 
-  res.cookie("user_id", random_id);
-  console.log(users);
-  res.redirect("/urls");
+  if (email === "" || password === "") {
+    res
+      .status(400)
+      .send("Error 400: Email or Password cannot be empty strings");
+    return;
+  } else if (userEmail === email) {
+    res.status(400).send("Error 400: Email is already in use!");
+    return;
+  } else {
+    const random_id = generateRandomNum();
+    users[random_id] = {
+      id: random_id,
+      email: email,
+      password: password,
+    };
+    res.cookie("user_id", random_id);
+
+    res.redirect("/urls");
+  }
 });
 
 app.post("/urls", (req, res) => {
