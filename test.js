@@ -11,22 +11,35 @@ const users = {
   },
 };
 
+const getUserId = function (email, users) {
+  for (let user_id in users) {
+    if (users[user_id].email === email) {
+      console.log("User id: " + users[user_id].id);
+      return users[user_id];
+    }
+  }
+  return null;
+};
 const getUserEmail = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
+      console.log("User email: " + users[user_id].email);
       return users[user_id].email;
     }
   }
   return null;
 };
-const getUserWithEmail = (email, users) => {
-  for (let id in users) {
-    if (users[id].email === email) {
-      return users[id].email;
+
+const getUserPassword = function (email, users) {
+  for (let user_id in users) {
+    if (users[user_id].email === email) {
+      console.log("User password: " + users[user_id].password);
+      return users[user_id].password;
     }
   }
   return null;
 };
 
-console.log(getUserEmail("us2er@example.com", users));
-console.log(getUserWithEmail("u2ser@example.com", users));
+getUserId("user@example.com", users);
+getUserEmail("user@example.com", users);
+getUserPassword("user@example.com", users);

@@ -29,11 +29,31 @@ const users = {
     password: "dishwasher-funk",
   },
 };
+const getUserId = function (email, users) {
+  for (let user_id in users) {
+    if (users[user_id].email === email) {
+      console.log("User id: " + users[user_id].id);
+      return users[user_id];
+    }
+  }
+  return null;
+};
 
 const getUserEmail = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
+      console.log(users[user_id].email);
       return users[user_id].email;
+    }
+  }
+  return null;
+};
+
+const getUserPassword = function (email, users) {
+  for (let user_id in users) {
+    if (users[user_id].email === email) {
+      console.log(users[user_id].password);
+      return users[user_id].password;
     }
   }
   return null;
@@ -62,10 +82,6 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
-app.get("/register", (req, res) => {
-  res.render("registration");
-});
-
 app.get("/hello", (req, res) => {
   const templateVars = { greeting: "Hello World!" };
   res.render("hello_world", templateVars);
@@ -78,6 +94,31 @@ app.get("/set", (req, res) => {
 
 app.get("/fetch", (req, res) => {
   res.send(`a = ${a}`);
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+app.post("/login", (req, res) => {
+  const { email, password } = req.body;
+
+  const userId = getUserId(email, users);
+  const userEmail = getUserEmail(email, users);
+  const userPassword = getUserPassword(email, users);
+
+  if (email === "" || password === "") {
+    res.status(400).send("Error 400: Email or password cannot be empty");
+  } else if (userEmail !== email && userPassword !== password) {
+    res.status(400).send("Error 400: Incorrect email or password");
+  } else {
+    res.cookie("user_id", userId);
+
+    res.redirect("/urls");
+  }
+});
+
+app.get("/register", (req, res) => {
+  res.render("registration");
 });
 
 app.post("/register", (req, res) => {
@@ -151,13 +192,25 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
-app.post("/login", (req, res) => {
-  const { username } = req.body;
-  console.log("Username entered: " + username);
-  res.cookie("username", username);
+// app.get("/login", (req, res) => {
+//   res.render("login");
+// });
+// app.post("/login", (req, res) => {
+//   const { email, password } = req.body;
 
-  res.redirect("/urls");
-});
+//   const userEmail = getUserEmail(email, users);
+
+//   const userPassword = getUserPassword(email, users);
+
+//   if (email === "" || password === "") {
+//     res.send("Error 400: Incorrect email or password");
+//   } else if (userEmail !== email && userPassword !== password) {
+//     res.send("Error");
+//   }
+//   res.cookie("email", email);
+
+//   res.redirect("/urls");
+// });
 
 app.post("/logout", (req, res) => {
   res.clearCookie("user_id");

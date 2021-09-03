@@ -20,16 +20,14 @@
     </div>
     <% if(!user){ %>
 
-    <form method="POST" action="/login">
-      <input
-        type="text"
-        name="username"
-        placeholder="username"
-        style="width: 300px; margin: 1em"
-      />
-
-      <button type="submit" class="btn btn-outline-dark">login</button>
-    </form>
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="/login" style="color: white"
+        >Sign In</a
+      >
+      <a class="nav-item nav-link" href="/register" style="color: white"
+        >Register
+      </a>
+    </div>
     <% }else{ %>
 
     <form method="POST" action="logout">
