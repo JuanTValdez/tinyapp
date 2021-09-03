@@ -18,8 +18,8 @@ const urlDatabase = {
 };
 
 const users = {
-  userRandomID: {
-    id: "userRandomID",
+  f73ms3: {
+    id: "f73ms3",
     email: "user@example.com",
     password: "purple-monkey-dinosaur",
   },
@@ -28,12 +28,17 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk",
   },
+  r83hdw: {
+    id: "r83hdw",
+    email: "juantvaldez85@gmail.com",
+    password: "1111",
+  },
 };
 const getUserId = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      console.log("User id: " + users[user_id].id);
-      return users[user_id];
+      // console.log("User id: " + users[user_id].id);
+      return users[user_id].id;
     }
   }
   return null;
@@ -42,7 +47,7 @@ const getUserId = function (email, users) {
 const getUserEmail = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      console.log(users[user_id].email);
+      // console.log(users[user_id].email);
       return users[user_id].email;
     }
   }
@@ -52,7 +57,7 @@ const getUserEmail = function (email, users) {
 const getUserPassword = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      console.log(users[user_id].password);
+      // console.log(users[user_id].password);
       return users[user_id].password;
     }
   }
@@ -103,14 +108,16 @@ app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   const userId = getUserId(email, users);
+
   const userEmail = getUserEmail(email, users);
   const userPassword = getUserPassword(email, users);
 
   if (email === "" || password === "") {
     res.status(400).send("Error 400: Email or password cannot be empty");
-  } else if (userEmail !== email && userPassword !== password) {
+  } else if (userEmail !== email || userPassword !== password) {
     res.status(400).send("Error 400: Incorrect email or password");
   } else {
+    // BUG FIX - user does not display in header
     res.cookie("user_id", userId);
 
     res.redirect("/urls");
