@@ -3,8 +3,9 @@ const app = express();
 const PORT = 8090; // default port 8090
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
-// const { uuid } = require("uuidv4");
+const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
+const saltRounds = 12;
 
 const generateRandomNum = function () {
   let randomString = (Math.random() + 1).toString(36).substring(6);
@@ -40,7 +41,7 @@ const users = {
   },
   aJ48lW: {
     id: "aJ48lW",
-    email: "juantvaldez85@gmail.com",
+    email: "random@gmail.com",
     password: "1111",
   },
 };
@@ -161,7 +162,7 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
   const userEmail = getUserEmail(email, users);
 
   if (email === "" || password === "") {
@@ -178,7 +179,7 @@ app.post("/register", (req, res) => {
     users[random_id] = {
       id: random_id,
       email: email,
-      password: password,
+      password: bcrypt.hashSync("1234", saltRounds),
     };
 
     res.cookie("user_id", random_id);
@@ -187,7 +188,7 @@ app.post("/register", (req, res) => {
   }
 });
 
-// need to fix editing.
+//Edit URL
 app.post("/urls/:shortURL/edit", (req, res) => {
   if (!users[req.cookies["user_id"]]) {
     res.status(404).send("You are not authorized!");
@@ -202,6 +203,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   }
 });
 
+// Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (!users[req.cookies["user_id"]])
     res.status(404).send("You are not authorized!");
@@ -237,6 +239,7 @@ app.post("/urls", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
+//redirect to website saved inside urlDatabase
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
