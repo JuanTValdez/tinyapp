@@ -19,9 +19,12 @@ const urlDatabase = {
   b6UTxQ: { longURL: "https://www.stackoverflow.ca", userID: "aJ48lW" },
   i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" },
   p37oVw: { longURL: "https://www.lighthouse.ca", userID: "aJ48lW" },
-  p38oVw: { longURL: "https://www.lighthouse.ca", userID: "user2RandomID" },
-  p39oVw: { longURL: "https://www.lighthouse.ca", userID: "user2RandomID" },
-  p39oVw: { longURL: "https://www.lighthouse.ca", userID: "user2RandomID" },
+  p38oVw: { longURL: "https://www.espn.ca", userID: "user2RandomID" },
+  p39oVw: {
+    longURL: "https://www.youtube.ca",
+    userID: "user2RandomID",
+  },
+  p39oVw: { longURL: "https://www.bing.ca", userID: "user2RandomID" },
 };
 
 const users = {
@@ -41,14 +44,16 @@ const users = {
     password: "1111",
   },
 };
-const userURLs = {};
+// const userURLs = {};
 
 const urlsForUser = function (id) {
+  const userURLs = {};
   for (item in urlDatabase) {
     const user_id = urlDatabase[item].userID;
 
     if (id === user_id) {
       userURLs[item] = {
+        shortURL: user_id,
         longURL: urlDatabase[item].longURL,
       };
     }
@@ -93,6 +98,9 @@ app.get("/urls.json", (req, res) => {
 });
 // need to add url to userURL object to display it on urls page
 app.get("/urls", (req, res) => {
+  console.log("youtube");
+
+  console.log(urlDatabase);
   const templateVars = {
     user: users[req.cookies["user_id"]],
     urls: urlsForUser(req.cookies["user_id"]),
@@ -179,6 +187,7 @@ app.post("/register", (req, res) => {
   }
 });
 
+// need to fix editing.
 app.post("/urls/:shortURL/edit", (req, res) => {
   if (!users[req.cookies["user_id"]]) {
     res.status(404).send("You are not authorized!");
@@ -187,7 +196,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
     const { newURL } = req.body;
     const newLongURL = newURL;
 
-    urlDatabase[shortURL] = newLongURL;
+    urlDatabase[shortURL].longURL = newLongURL;
 
     res.redirect(`/urls/${shortURL}`);
   }
@@ -199,8 +208,8 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   else {
     const shortURL = req.params.shortURL;
 
-    // delete urlDatabase[shortURL];
-    delete userURLs[shortURL];
+    delete urlDatabase[shortURL];
+
     res.redirect("/urls");
   }
 });
@@ -209,22 +218,22 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     user: users[req.cookies["user_id"]],
     shortURL: req.params.shortURL,
-    // longURL: urlDatabase[req.params.shortURL].longURL,
-    longURL: userURLs[req.params.shortURL].longURL,
+    longURL: urlDatabase[req.params.shortURL].longURL,
   };
 
   res.render("urls_show", templateVars);
 });
 
+// Create new URL
 app.post("/urls", (req, res) => {
   const shortURL = generateRandomNum();
   const { addURL } = req.body;
 
-  userURLs[shortURL] = {
+  urlDatabase[shortURL] = {
     longURL: addURL,
-    userID: users[req.cookies["user_id"]],
+    userID: users[req.cookies["user_id"]].id,
   };
-  //console.log(userURLs);
+
   res.redirect(`/urls/${shortURL}`);
 });
 

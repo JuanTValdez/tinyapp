@@ -26,15 +26,14 @@ const urlDatabase = {
   p39oVw: { longURL: "https://www.lighthouse.ca", userID: "user2RandomID" },
   p39oVw: { longURL: "https://www.lighthouse.ca", userID: "user2RandomID" },
 };
+const userURLs = {};
 
 const urlsForUser = function (id) {
-  const userURLs = {};
   for (item in urlDatabase) {
     const user_id = urlDatabase[item].userID;
 
     if (id === user_id) {
       // const random_id = uuidv4().slice(0, 6);
-
       userURLs[item] = {
         // user_id: id,
         // shortURL: urlDatabase[item],
@@ -42,31 +41,19 @@ const urlsForUser = function (id) {
       };
     }
   }
+
   console.log(userURLs);
+  // console.log(userURLs);
+
   return userURLs;
 };
 
-// const userURLs = {};
-// const urlsForUser = function (id) {
-//   for (item in urlDatabase) {
-//     const user_id = urlDatabase[item].userID;
-
-//     if (id === user_id) {
-//       const random_id = uuidv4().slice(0, 6);
-
-//       userURLs[random_id] = {
-//         user_id: id,
-//         longURL: urlDatabase[item].longURL,
-//       };
-//     }
-//   }
-//   console.log(userURLs);
-// };
+urlsForUser("aJ48lW");
 
 const getUserId = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      console.log("User id: " + users[user_id]);
+      // console.log("User id: " + users[user_id]);
       return users[user_id].id;
     }
   }
@@ -92,7 +79,7 @@ const getUserPassword = function (email, users) {
   return null;
 };
 
-urlsForUser("aJ48lW");
+// urlsForUser("aJ48lW");
 // getUserId("juantvaldez85@gmail.com", users);
 // getUserEmail("user@example.com", users);
 // getUserPassword("user@example.com", users);
