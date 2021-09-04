@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
-
+const bcrypt = require("bcryptjs");
 const users = {
   userRandomID: {
     id: "userRandomID",
@@ -13,8 +13,8 @@ const users = {
   },
   r83hdw: {
     id: "r83hdw",
-    email: "juantvaldez85@gmail.com",
-    password: "1111",
+    email: "random@gmail.com",
+    password: "1112222221",
   },
 };
 
@@ -42,13 +42,12 @@ const urlsForUser = function (id) {
     }
   }
 
-  console.log(userURLs);
   // console.log(userURLs);
 
   return userURLs;
 };
 
-urlsForUser("aJ48lW");
+// urlsForUser("aJ48lW");
 
 const getUserId = function (email, users) {
   for (let user_id in users) {
@@ -72,13 +71,13 @@ const getUserEmail = function (email, users) {
 const getUserPassword = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      // console.log("User password: " + users[user_id].password);
+      console.log(users[user_id].password);
       return users[user_id].password;
     }
   }
   return null;
 };
-
+getUserPassword("random@gmail.com", users);
 // urlsForUser("aJ48lW");
 // getUserId("juantvaldez85@gmail.com", users);
 // getUserEmail("user@example.com", users);

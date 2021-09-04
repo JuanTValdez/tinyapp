@@ -32,17 +32,17 @@ const users = {
   f73ms3: {
     id: "f73ms3",
     email: "user@example.com",
-    password: "2222",
+    password: bcrypt.hashSync("1111", saltRounds),
   },
   user2RandomID: {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "2222",
+    password: bcrypt.hashSync("2222", saltRounds),
   },
   aJ48lW: {
     id: "aJ48lW",
     email: "random@gmail.com",
-    password: "1111",
+    password: bcrypt.hashSync("1234", saltRounds),
   },
 };
 // const userURLs = {};
@@ -59,7 +59,7 @@ const urlsForUser = function (id) {
       };
     }
   }
-  // console.log(userURLs);
+
   return userURLs;
 };
 
@@ -99,9 +99,6 @@ app.get("/urls.json", (req, res) => {
 });
 // need to add url to userURL object to display it on urls page
 app.get("/urls", (req, res) => {
-  console.log("youtube");
-
-  console.log(urlDatabase);
   const templateVars = {
     user: users[req.cookies["user_id"]],
     urls: urlsForUser(req.cookies["user_id"]),
@@ -147,7 +144,10 @@ app.post("/login", (req, res) => {
 
   if (email === "" || password === "") {
     res.status(400).send("Error 400: Email or password cannot be empty");
-  } else if (userEmail !== email || userPassword !== password) {
+  } else if (
+    userEmail !== email ||
+    bcrypt.compareSync(password, userPassword) === false
+  ) {
     res.status(400).send("Error 400: Incorrect email or password");
   } else {
     res.cookie("user_id", userId);
@@ -162,8 +162,8 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { email, password } = req.body;
-  const hashedPassword = bcrypt.hashSync(password, saltRounds);
   const userEmail = getUserEmail(email, users);
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
   if (email === "" || password === "") {
     res
@@ -179,7 +179,7 @@ app.post("/register", (req, res) => {
     users[random_id] = {
       id: random_id,
       email: email,
-      password: bcrypt.hashSync("1234", saltRounds),
+      password: hashedPassword,
     };
 
     res.cookie("user_id", random_id);
@@ -228,7 +228,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 // Create new URL
 app.post("/urls", (req, res) => {
-  const shortURL = generateRandomNum();
+  const shortURL = uuidv4().slice(0, 6);
   const { addURL } = req.body;
 
   urlDatabase[shortURL] = {
