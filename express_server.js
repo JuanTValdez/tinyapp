@@ -3,6 +3,7 @@ const app = express();
 const PORT = 8090; // default port 8090
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+var cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const saltRounds = 12;
@@ -14,6 +15,12 @@ const generateRandomNum = function () {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"],
+  })
+);
 app.set("view engine", "ejs");
 
 const urlDatabase = {
@@ -97,18 +104,18 @@ app.get("/", (req, res) => {
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
-// need to add url to userURL object to display it on urls page
+
 app.get("/urls", (req, res) => {
   const templateVars = {
-    user: users[req.cookies["user_id"]],
-    urls: urlsForUser(req.cookies["user_id"]),
+    user: users[req.session.user_id],
+    urls: urlsForUser(req.session.user_id),
   };
 
   res.render("urls_index", templateVars);
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user: users[req.cookies["user_id"]] };
+  const templateVars = { user: users[req.session.user_id] };
 
   if (templateVars.user) {
     res.render("urls_new", templateVars);
@@ -150,8 +157,8 @@ app.post("/login", (req, res) => {
   ) {
     res.status(400).send("Error 400: Incorrect email or password");
   } else {
-    res.cookie("user_id", userId);
-
+    // res.cookie("user_id", userId);
+    req.session.user_id = userId.id;
     res.redirect("/urls");
   }
 });
@@ -182,15 +189,15 @@ app.post("/register", (req, res) => {
       password: hashedPassword,
     };
 
-    res.cookie("user_id", random_id);
-
+    // res.sessions("user_id", random_id);
+    req.session.user_id = random_id;
     res.redirect("/urls");
   }
 });
 
 //Edit URL
 app.post("/urls/:shortURL/edit", (req, res) => {
-  if (!users[req.cookies["user_id"]]) {
+  if (!users[req.session.user_id]) {
     res.status(404).send("You are not authorized!");
   } else {
     const shortURL = req.params.shortURL;
@@ -205,7 +212,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 
 // Delete URL
 app.post("/urls/:shortURL/delete", (req, res) => {
-  if (!users[req.cookies["user_id"]])
+  if (!users[req.session.user_id])
     res.status(404).send("You are not authorized!");
   else {
     const shortURL = req.params.shortURL;
@@ -218,7 +225,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
-    user: users[req.cookies["user_id"]],
+    user: users[req.session.user_id],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL].longURL,
   };
@@ -233,7 +240,8 @@ app.post("/urls", (req, res) => {
 
   urlDatabase[shortURL] = {
     longURL: addURL,
-    userID: users[req.cookies["user_id"]].id,
+    // userID: users[req.session["user_id"]],
+    userID: users[req.session.user_id].id,
   };
 
   res.redirect(`/urls/${shortURL}`);
@@ -246,7 +254,8 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("user_id");
+  // res.clearCookie("user_id");
+  res.session = null;
   res.redirect("/urls");
 });
 
