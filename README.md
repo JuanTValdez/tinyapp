@@ -23,7 +23,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Screenshots
 
-![](screenshots/filename edit_page.png)
+![](screenshots/edit_page.png)
 
 ## Endpoints
 
