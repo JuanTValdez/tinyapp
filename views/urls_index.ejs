@@ -31,7 +31,7 @@
         <tbody>
           <% for(let url in urls) { %>
           <tr>
-            <!-- <% if(user){ %> -->
+            <% if(user){ %>
             <td><%= url %></td>
             <td><%= urls[url].longURL %></td>
             <td>
@@ -56,9 +56,6 @@
           </tr>
           <% } %>
         </tbody>
-
-        <!-- <form method="POST" action="/urls/b2xVn2/delete">...</form>
-        <form method="POST" action="/urls/9sm5xK/delete">...</form> -->
       </table>
     </main>
     <% } else{ %>
