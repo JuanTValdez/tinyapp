@@ -20,7 +20,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ![](screenshots/homepage_page.png)
 ![](screenshots/login_page.png)
-![](screenshots/register_page.png)
+![](screenshots/registration_page.png)
 ![](screenshots/edit_page.png)
 ![](screenshots/populated_homepage.png)
 
