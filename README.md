@@ -10,6 +10,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 - bcrypt
 - body-parser
 - cookie-session
+- uuidv4
 
 ## Getting Started
 
@@ -18,11 +19,11 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Screenshots
 
-![](screenshots/home_page.png)
-![](screenshots/login_page.png)
-![](screenshots/registration_page.png)
-![](screenshots/edit_page.png)
-![](screenshots/populated_homepage.png)
+![Home page](screenshots/home_page.png)
+![Login page](screenshots/login_page.png)
+![Registration page](screenshots/registration_page.png)
+![edit page](screenshots/edit_page.png)
+![Home page populated with urls](screenshots/populated_homepage.png)
 
 ## Endpoints
 
