@@ -52,7 +52,7 @@ const urlsForUser = function (id) {
 const getUserId = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      // console.log("User id: " + users[user_id]);
+      console.log("User id: " + users[user_id].id);
       return users[user_id].id;
     }
   }
@@ -61,7 +61,7 @@ const getUserId = function (email, users) {
 const getUserEmail = function (email, users) {
   for (let user_id in users) {
     if (users[user_id].email === email) {
-      // console.log("User email: " + users[user_id].email);
+      console.log("User email: " + users[user_id].email);
       return users[user_id].email;
     }
   }
@@ -77,8 +77,14 @@ const getUserPassword = function (email, users) {
   }
   return null;
 };
-getUserPassword("random@gmail.com", users);
+// getUserPassword("random@gmail.com", users);
 // urlsForUser("aJ48lW");
-// getUserId("juantvaldez85@gmail.com", users);
+getUserId("random@gmail.com", users);
 // getUserEmail("user@example.com", users);
 // getUserPassword("user@example.com", users);
+
+// const user = getUserId("user@example.com", users);
+
+// console.log(getUserId(user));
+// const expectedOutput = "userRandomID";
+//assert.isTrue(getUserId(user), expectedOutput);
