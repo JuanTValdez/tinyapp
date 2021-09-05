@@ -1,17 +1,13 @@
 const express = require("express");
 const app = express();
-const PORT = 8090; // default port 8090
+const PORT = 8099; // default port 8090
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 var cookieSession = require("cookie-session");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const saltRounds = 12;
-
-const generateRandomNum = function () {
-  let randomString = (Math.random() + 1).toString(36).substring(6);
-  return randomString;
-};
+const { getUserId, getUserEmail, getUserPassword } = require("./helper");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -52,7 +48,6 @@ const users = {
     password: bcrypt.hashSync("1234", saltRounds),
   },
 };
-// const userURLs = {};
 
 const urlsForUser = function (id) {
   const userURLs = {};
@@ -68,33 +63,6 @@ const urlsForUser = function (id) {
   }
 
   return userURLs;
-};
-
-const getUserId = function (email, users) {
-  for (let user_id in users) {
-    if (users[user_id].email === email) {
-      return users[user_id].id;
-    }
-  }
-  return null;
-};
-
-const getUserEmail = function (email, users) {
-  for (let user_id in users) {
-    if (users[user_id].email === email) {
-      return users[user_id].email;
-    }
-  }
-  return null;
-};
-
-const getUserPassword = function (email, users) {
-  for (let user_id in users) {
-    if (users[user_id].email === email) {
-      return users[user_id].password;
-    }
-  }
-  return null;
 };
 
 app.get("/", (req, res) => {
@@ -139,8 +107,11 @@ app.get("/fetch", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  const templateVars = { user: users[req.session.user_id] };
+
+  res.render("login", templateVars);
 });
+
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -158,13 +129,14 @@ app.post("/login", (req, res) => {
     res.status(400).send("Error 400: Incorrect email or password");
   } else {
     // res.cookie("user_id", userId);
-    req.session.user_id = userId.id;
+    req.session.user_id = userId;
     res.redirect("/urls");
   }
 });
 
 app.get("/register", (req, res) => {
-  res.render("registration");
+  const templateVars = { user: users[req.session.user_id] };
+  res.render("registration", templateVars);
 });
 
 app.post("/register", (req, res) => {
@@ -189,7 +161,6 @@ app.post("/register", (req, res) => {
       password: hashedPassword,
     };
 
-    // res.sessions("user_id", random_id);
     req.session.user_id = random_id;
     res.redirect("/urls");
   }
@@ -240,7 +211,7 @@ app.post("/urls", (req, res) => {
 
   urlDatabase[shortURL] = {
     longURL: addURL,
-    // userID: users[req.session["user_id"]],
+
     userID: users[req.session.user_id].id,
   };
 
@@ -254,8 +225,7 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
-  // res.clearCookie("user_id");
-  res.session = null;
+  req.session = null;
   res.redirect("/urls");
 });
 
