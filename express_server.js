@@ -195,13 +195,16 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = {
-    user: users[req.session.user_id],
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL].longURL,
-  };
-
-  res.render("urls_show", templateVars);
+  if (req.session.user_id === urlDatabase[req.params.shortURL].userID) {
+    const templateVars = {
+      user: users[req.session.user_id],
+      shortURL: req.params.shortURL,
+      longURL: urlDatabase[req.params.shortURL].longURL,
+    };
+    res.render("urls_show", templateVars);
+  } else {
+    res.status(404).send("URL does not exist in your database!");
+  }
 });
 
 // Create new URL
